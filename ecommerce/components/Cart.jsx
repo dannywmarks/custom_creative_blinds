@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import Link from "next/link";
+import axios from "axios";
 import {
   AiOutlineMinus,
   AiOutlinePlus,
@@ -8,8 +9,10 @@ import {
 } from "react-icons/ai";
 import { TiDeleteOutline } from "react-icons/ti";
 import toast from "react-hot-toast";
+
 import { useStateContext } from "../context/StateContext";
 import { urlFor } from "../lib/client";
+import getStripe from "../lib/getStripe";
 
 const Cart = () => {
   const cartRef = useRef();
@@ -18,9 +21,31 @@ const Cart = () => {
     totalQuantities,
     cartItems,
     setShowCart,
-    toggleCartItemQuantity,
-    onRemove
+    toggleCartItemQuanitity,
+    onRemove,
   } = useStateContext();
+
+  const handleCheckout = async () => {
+    const stripe = await getStripe();
+
+    const response = await fetch("/api/stripe", {
+      method: "POST",
+      body: JSON.stringify(cartItems),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.statusCode === 500) return;
+
+    console.log("response", response);
+
+    const data = await response.json();
+
+    toast.loading("Redirecting...");
+
+    stripe.redirectToCheckout({ sessionId: data.id });
+  };
 
   return (
     <div className="cart-wrapper" ref={cartRef}>
@@ -32,12 +57,13 @@ const Cart = () => {
         >
           <AiOutlineLeft />
           <span className="heading">Your Cart</span>
-          <span className="cart-num-items">{totalQuantities}</span>
+          <span className="cart-num-items">({totalQuantities} items)</span>
         </button>
+
         {cartItems.length < 1 && (
           <div className="empty-cart">
             <AiOutlineShopping size={150} />
-            <h1>Your Shopping Cart is Empty</h1>
+            <h3>Your shopping bag is empty</h3>
             <Link href="/">
               <button
                 type="button"
@@ -49,6 +75,7 @@ const Cart = () => {
             </Link>
           </div>
         )}
+
         <div className="product-container">
           {cartItems.length >= 1 &&
             cartItems.map((item) => (
@@ -68,23 +95,29 @@ const Cart = () => {
                         <span
                           className="minus"
                           onClick={() =>
-                            toggleCartItemQuantity(item._id, "dec")
+                            toggleCartItemQuanitity(item._id, "dec")
                           }
                         >
                           <AiOutlineMinus />
                         </span>
-                        <span className="num">{item.quantity}</span>
+                        <span className="num" onClick="">
+                          {item.quantity}
+                        </span>
                         <span
                           className="plus"
                           onClick={() =>
-                            toggleCartItemQuantity(item._id, "inc")
+                            toggleCartItemQuanitity(item._id, "inc")
                           }
                         >
                           <AiOutlinePlus />
                         </span>
                       </p>
                     </div>
-                    <button type="button" className="remove-item" onClick={() => onRemove(item)}>
+                    <button
+                      type="button"
+                      className="remove-item"
+                      onClick={() => onRemove(item)}
+                    >
                       <TiDeleteOutline />
                     </button>
                   </div>
@@ -99,7 +132,7 @@ const Cart = () => {
               <h3>${totalPrice}</h3>
             </div>
             <div className="btn-container">
-              <button className="btn" type="button" onClick="">
+              <button type="button" className="btn" onClick={handleCheckout}>
                 Pay with Stripe
               </button>
             </div>
