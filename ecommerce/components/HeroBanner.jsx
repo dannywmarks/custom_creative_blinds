@@ -5,22 +5,25 @@ import { urlFor } from "../lib/client";
 // import Image from 'next/Image'
 
 const HeroBanner = ({ heroBanner }) => {
+
+  console.log("hb", heroBanner)
+
   return (
     <div className="hero-banner-container">
       <div>
         <p className="blinds-solo">{heroBanner.smallText}</p>
         <h3>{heroBanner.midText}</h3>
         <h1>{heroBanner.largeText1}</h1>
-        <img
+        {/* <img
           src={urlFor(heroBanner.image)}
           alt="blinds"
           className="hero-banner-image"
-        />
+        /> */}
       
 
         <div>
-          <Link href={`/product/${heroBanner.product}`}>
-            <button type="button">{heroBanner.buttonText}</button>
+          <Link href={`/design`}>
+            <button type="button">Create Your Own Design</button>
           </Link>
           <div className="desc">
             <h5>Description</h5>

@@ -117,7 +117,6 @@ span.text-red {
   background-color: #ebebeb;
   transform: scale(1, 1);
   transition: transform 0.5s ease;
-
 }
 
 .product-name {
@@ -132,6 +131,9 @@ span.text-red {
 .hero-banner-container {
   padding: 100px 40px;
   background-color: #dcdcdc;
+  background-image: url("../assets/blinds_demo_combo.png");
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 15px;
   position: relative;
   height: 500px;
@@ -157,14 +159,12 @@ span.text-red {
 .hero-banner-container h3 {
   font-size: 4rem;
   margin-top: 4px;
-
 }
 .hero-banner-container h1 {
   color: white;
   font-size: 10em;
   margin-left: -20px;
   text-transform: uppercase;
-
 }
 .hero-banner-image {
   position: absolute;
@@ -172,7 +172,6 @@ span.text-red {
   right: 10%;
   width: 350px;
   height: 450px;
-
 }
 
 .desc {
